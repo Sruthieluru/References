@@ -1,0 +1,18 @@
+image:  
+  name: hashicorp/terraform:light 
+  entrypoint: [""] 
+
+stages: 
+  - start 
+
+before_script: 
+  - rm -rf .terraform 
+  - echo $SERVICE_ACCOUNT_KEY > credentials_file.json 
+  - terraform init 
+
+build: 
+  stage: start 
+  script: 
+    - terraform validate  
+    - terraform plan 
+    - terraform apply -auto-approve 
