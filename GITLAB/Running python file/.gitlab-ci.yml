@@ -1,0 +1,11 @@
+stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  image: sruthi1717/myimage:latest
+  script:
+    - echo "Running the Python application"
+    - python mainfile.py
+  only:
+    - main
