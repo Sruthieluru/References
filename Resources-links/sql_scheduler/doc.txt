@@ -1,0 +1,52 @@
+1. Define the schedule 
+    Frequency:  ( * * * * * )
+                  │ │ │ │ │
+                  │ │ │ │ └─ Day of the Week (0 - 6) (Sunday = 0)
+                  │ │ │ └─── Month (1 - 12)
+                  │ │ └───── Day of the Month (1 - 31)
+                  │ └─────── Hour (0 - 23)
+                  └───────── Minute (0 - 59)
+    
+    For the 1–5, it’s the day of the week. The 0 is the Sunday, the - is to set an interval. 
+    Ex: Shutdown the database every day at 8pm. (0 20 * * *) 
+
+ 
+
+
+2. Configure the execution 
+    a. Target type: http 
+    
+    b. Url: https://www.googleapis.com/sql/v1beta4/projects/cedar-context-433909-d9/instances/postgres 
+                                          (or)
+       https://sqladmin.googleapis.com/sql/v1beta4/projects/cedar-context-433909-d9/instances/postgres 
+    
+       Ref url: https://sqladmin.googleapis.com/sql/v1beta4/projects/{projectId}/instances/{instanceName} 
+    
+    c. Http headers 
+    
+       Name                          ----------->                           Value 
+       Content-Type                                                         application/json 
+       User-Agent                                                           Google-Cloud-Scheduler 
+
+    d. HTTP Method: PATCH
+
+    e. Body: 
+       1. Start 
+       { 
+        "settings": { 
+        "activationPolicy": "ALWAYS" 
+        } 
+       } 
+       2. Stop 
+       { 
+        "settings": { 
+        "activationPolicy": "NEVER" 
+        } 
+       } 
+    
+    f. Auth header: add oauth token 
+    
+    g. Service account: add required service account with required role and permissions (roles/cloudsql.editor)
+    
+    h. Scope: https://www.googleapis.com/auth/cloud-platform 
+

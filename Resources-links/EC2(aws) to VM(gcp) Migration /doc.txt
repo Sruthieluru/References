@@ -1,0 +1,26 @@
+Steps for Migration
+
+1. Set Up the Source
+   Navigate to Google Cloud Console.
+   Go to Compute Engine > Migrate to Virtual Machines > Sources.
+   Click Add Source and choose AWS.
+
+2. Activate the Source
+   Wait for the source status to change to ACTIVE.
+   Once active, select the desired VM and click Add Migrations.
+   Select VM Migrations to initiate the migration process.
+
+3. Start Replication
+   Select the VM and go to the Migration tab.
+   Click Start Replication.
+   Edit the target details as needed to configure the destination VM.
+
+4. Create a Service Account
+   Navigate to IAM & Admin > Service Accounts in the Google Cloud Console.
+   Create a new service account with the Service Account User Role.
+   Assign the service account to the migration process for proper authentication.
+
+5. Complete the Migration
+   Once replication is complete, select the VM.
+   Perform a CUT-OVER and TEST-CLONE operation:
+    - Click on CUT-OVER to finalize the migration.
