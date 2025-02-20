@@ -11,10 +11,10 @@ Important Notes to Remember:
 1. Region: The region selected in the scheduler must be the same as the region of the VM you want to schedule.
 2. Time Zone: Ensure you select India Standard Time (IST) for your time zone to follow the correct schedule for India.
 3. VM Start/Stop Time:
-   The VM takes approximately 15 minutes to start or stop after the scheduled time.
-   Ensure that your schedule accommodates this time buffer.
+   --> The VM takes approximately 15 minutes to start or stop after the scheduled time.
+    Ensure that your schedule accommodates this time buffer.
 4. Permissions:
-   compute.instances.start
-   compute.instances.stop
-Ensure the service account associated with the scheduler has these permissions.
+     compute.instances.start
+     compute.instances.stop
+   Ensure the service account associated with the scheduler has these permissions.
 5. API: Ensure that the Compute Engine API is enabled for your Google Cloud project. Without this API, the scheduler will not function.
