@@ -1,3 +1,6 @@
+
+Ensure that the ***Cloud SQL Admin API*** is enabled.
+
 1. Define the schedule 
     Frequency:  ( * * * * * )
                   │ │ │ │ │
@@ -12,7 +15,6 @@
 
  
 
-
 2. Configure the execution 
     a. Target type: http 
     
@@ -20,7 +22,7 @@
                                           (or)
        https://sqladmin.googleapis.com/sql/v1beta4/projects/cedar-context-433909-d9/instances/postgres 
     
-       Ref url: https://sqladmin.googleapis.com/sql/v1beta4/projects/{projectId}/instances/{instanceName} 
+       Ref url: https://www.googleapis.com/sql/v1beta4/projects/{projectId}/instances/{instanceName} 
     
     c. Http headers 
     
@@ -37,6 +39,7 @@
         "activationPolicy": "ALWAYS" 
         } 
        } 
+
        2. Stop 
        { 
         "settings": { 
