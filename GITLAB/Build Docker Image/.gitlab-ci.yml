@@ -1,0 +1,80 @@
+
+#-----------------------------------Build Docker Image and push it to the gitlab's artifact registry-----------------------------------
+stages:
+  - build
+  - push
+
+variables:
+  DOCKER_IMAGE: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+
+default:
+  interruptible: true
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+
+# Build the Docker image
+build_image:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind   
+  script:
+    - docker build -t $DOCKER_IMAGE .
+    - docker push $DOCKER_IMAGE
+    - echo "IMAGE_ID=$(docker inspect --format='{{.Id}}' $DOCKER_IMAGE)" >> docker_image.env
+
+  artifacts:
+    paths:
+      - docker_image.env
+  
+
+push_image:
+  stage: push
+  image: docker:latest
+  services:
+    - docker:dind
+  dependencies:
+    - build_image
+  script:
+    - docker pull $DOCKER_IMAGE 
+    - docker tag $DOCKER_IMAGE $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID
+    - docker push $CI_REGISTRY_IMAGE:$CI_PIPELINE_ID
+
+  # artifacts:
+  #   reports:
+  #     dotenv: docker_image.env
+
+
+
+
+
+# ----------------Build docker image and push it to the GCP's artifact registry--------------------------------------------
+stages:
+  - build
+
+variables:
+  GCP_PROJECT_ID: $GCP_PROJECT_ID               # Set via GitLab CI/CD Variables
+  GCR_IMAGE_NAME: $CI_PROJECT_NAME               # Docker image name based on the project name
+  GOOGLE_APPLICATION_CREDENTIALS: $SERVICE_ACCOUNT_KEY  
+  IMAGE_NAME: gcr.io/$GCP_PROJECT_ID/$GCR_IMAGE_NAME  
+  DOCKER_HOST: tcp://docker:2375/  # Set Docker host
+  DOCKER_TLS_CERTDIR: ""  # Disable TLS
+
+before_script:
+  - echo $SERVICE_ACCOUNT_KEY > credentials_file.json
+  - gcloud auth activate-service-account --key-file $SERVICE_ACCOUNT_KEY
+  - gcloud config set project $GCP_PROJECT_ID
+  - gcloud auth configure-docker gcr.io
+
+
+
+build_image:
+  image: google/cloud-sdk:latest
+  stage: build
+  services:
+    - docker:dind
+  script:
+    - docker build -t $IMAGE_NAME:v2 .  # Build the Docker image and tag as latest
+    - echo "Docker image tagged as $IMAGE_NAME:v2"
+    - docker push $IMAGE_NAME:v2  # Push the Docker image to GCR
+    - echo "Docker image pushed to GCR $IMAGE_NAME:v2"

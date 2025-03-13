@@ -1,0 +1,40 @@
+stages:
+  - file
+  - id
+  - read
+  - predefined variables
+# create_file:
+#   image: docker:latest
+#   stage: file
+#   before_script:
+#     docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+#   script:
+#     - echo "creating a new file"
+#     - mkdir -p build
+#     - touch build/file1.txt
+display_id:
+  stage: id
+  script: 
+    - echo "CI_COMMIT_SHORT_SHA:$CI_COMMIT_SHORT_SHA" >> ids.txt
+    - echo "CI_PIPELINE_ID:$CI_PIPELINE_ID" >> ids.txt
+    - echo "CI_REGISTRY_USER:$CI_REGISTRY_USER" >> ids.txt
+    - echo "CI_REGISTRY_PASSWORD:$CI_REGISTRY_PASSWORD" >> ids.txt
+    - echo "CI_REGISTRY:$CI_REGISTRY" >> ids.txt
+    - ls
+  artifacts:
+    paths:
+      - ids.txt
+      
+read_file:
+  stage: read 
+  dependencies:
+    - display_id
+  script:
+    - ls
+    - cat ids.txt
+
+display_variables:
+  stage: predefined variables
+  script:
+    # - echo "CI_COMMIT_REF_NAME:$CI_COMMIT_REF_NAME"
+    - printenv
